@@ -1,0 +1,26 @@
+.card {
+	border: solid black 1px;
+	/* flex: 1 0 21%;  */
+	margin: 0.5%;
+	/* box-sizing: border-box; */
+	justify-self: center;
+	cursor: pointer;
+	box-shadow: 3px 10px 8px 0px rgba(0, 0, 0, 0.57);
+	border-radius: 3%;
+	opacity: 1;
+	transition: opacity 1s ease 0s;
+  transition: opacity 0.1s ease, transform 0.1s ease;
+}
+.card:hover {
+	opacity: 0.7;
+  transform: scale(1.02);
+}
+.cards-container {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-around;
+	align-content: center;
+}
+.card-title {
+	text-align: center;
+}
