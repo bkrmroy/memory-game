@@ -10,12 +10,18 @@ function App() {
 	const modes = ["easy", "normal", "hard"];
 
 	function displayCards(_cards) {
-		console.log("displaying cards");
+		console.log(_cards);
 		return (
 			<div className="cards-container">
 				{_cards.map((eachCard) => {
 					return (
-						<div className="card" key={eachCard.name}>
+						<div
+							onClick={onCardClicked}
+							data-selected={eachCard.selected ? "true" : null}
+							data-name={eachCard.name}
+							className="card"
+							key={eachCard.name}
+						>
 							<img
 								className="card-img"
 								src={eachCard.img}
@@ -28,7 +34,16 @@ function App() {
 			</div>
 		);
 	}
-
+	function onCardClicked(e) {
+		const title = e.currentTarget.querySelector(".card-title").textContent;
+		console.log(title);
+		const tempCards = modifiedCards.map((card) => {
+			if (card.name === title) {
+				return { ...card, selected: true };
+			} else return card;
+		});
+		setModifiedCards([...helpers.shuffleArray(tempCards)]);
+	}
 	function displayModes(_modes) {
 		return (
 			<>
@@ -62,7 +77,7 @@ function App() {
 						return {
 							name: item.name,
 							img: item.images.jpg.image_url,
-							selected: "unselected",
+							selected: false,
 						};
 					})
 				);
