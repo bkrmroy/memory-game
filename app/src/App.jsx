@@ -6,14 +6,16 @@ function App() {
 	const [mode, updateMode] = useState("");
 	const [cards, setCards] = useState([]);
 	const [modifiedCards, setModifiedCards] = useState([]);
+	// const [displayedCards, setDisplayedCards] = useState([]);
 	const [score, updateScore] = useState(0);
 	const modes = ["easy", "normal", "hard"];
 
 	function displayCards(_cards) {
-		console.log(_cards);
+		const displayedCards = helpers.selectCardsForDisplay(_cards, mode);
+		if (displayedCards.length === 0) return <h1>YOU WIN!!!</h1>;
 		return (
 			<div className="cards-container">
-				{_cards.map((eachCard) => {
+				{displayedCards.map((eachCard) => {
 					return (
 						<div
 							onClick={onCardClicked}
@@ -71,7 +73,7 @@ function App() {
 			.then((response) => response.json())
 			.then((response) => {
 				// setTimeout(() => {
-				// console.log(response);
+				console.log("data fetched");
 				setCards(
 					response.data.map((item) => {
 						return {
@@ -90,7 +92,7 @@ function App() {
 	useEffect(() => {
 		function startGame() {
 			updateUi("playing");
-			console.log("starting game");
+			// console.log("starting game");
 			if (mode == "easy") {
 				setModifiedCards(
 					helpers.shuffleArray(cards).filter((element, index) => index < 10)

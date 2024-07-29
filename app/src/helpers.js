@@ -6,6 +6,47 @@ const helpers = (() => {
 		}
 		return array;
 	}
-	return { shuffleArray };
+	function getRandomInt(max) {
+		return Math.floor(Math.random() * max);
+	}
+	function areAllNumbersUnique(numbers) {
+		const uniqueNumbers = new Set(numbers);
+		return uniqueNumbers.size === numbers.length;
+	}
+	function randomArray(length, max) {
+		let arr = [];
+		for (let i = 0; i < length; i++) {
+			arr.push(getRandomInt(max));
+		}
+		if (areAllNumbersUnique(arr)) return arr;
+		else return randomArray(length, max);
+	}
+	function checkAllSelected(arrayOfCards) {
+		let allAreSelected = true;
+		for (let i = 0; i < arrayOfCards.length; i++) {
+			if (arrayOfCards[i].selected === false) {
+				allAreSelected = false;
+				break;
+			}
+		}
+		return allAreSelected;
+	}
+	function prepareCards(cards, length, max) {
+		const arrayOfCards = [];
+		const arrayOfIndexes = randomArray(length, max);
+		for (let i = 0; i < arrayOfIndexes.length; i++) {
+			arrayOfCards.push(cards[arrayOfIndexes[i]]);
+		}
+		if (checkAllSelected(arrayOfCards)) return prepareCards(cards, length, max);
+		return arrayOfCards;
+	}
+	//main card selector function
+	function selectCardsForDisplay(cards, mode) {
+		const limit =
+			mode === "easy" ? 4 : mode === "normal" ? 7 : mode === "hard" ? 10 : null;
+		if (checkAllSelected(cards)) return [];
+		else return prepareCards(cards, limit, cards.length);
+	}
+	return { shuffleArray, selectCardsForDisplay };
 })();
 export { helpers };
