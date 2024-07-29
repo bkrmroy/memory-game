@@ -6,13 +6,17 @@ function App() {
 	const [mode, updateMode] = useState("");
 	const [cards, setCards] = useState([]);
 	const [modifiedCards, setModifiedCards] = useState([]);
-	// const [displayedCards, setDisplayedCards] = useState([]);
 	const [score, updateScore] = useState(0);
+	const [highestScore, setHighestScore] = useState(0);
+	const [result, setResult] = useState("");
 	const modes = ["easy", "normal", "hard"];
 
 	function displayCards(_cards) {
 		const displayedCards = helpers.selectCardsForDisplay(_cards, mode);
-		if (displayedCards.length === 0) return <h1>YOU WIN!!!</h1>;
+		if (displayedCards.length === 0) {
+			setResult("win");
+			handleGameOver();
+		}
 		return (
 			<div className="cards-container">
 				{displayedCards.map((eachCard) => {
@@ -36,12 +40,20 @@ function App() {
 			</div>
 		);
 	}
+	function handleGameOver() {
+		setModifiedCards([]);
+		updateUi("game-over");
+		if (score > highestScore) setHighestScore(score);
+	}
 	function onCardClicked(e) {
 		const title = e.currentTarget.querySelector(".card-title").textContent;
-		console.log(title);
 		const tempCards = modifiedCards.map((card) => {
 			if (card.name === title) {
-				return { ...card, selected: true };
+				if (card.selected === true) handleGameOver();
+				else {
+					updateScore(score + 1);
+					return { ...card, selected: true };
+				}
 			} else return card;
 		});
 		setModifiedCards([...helpers.shuffleArray(tempCards)]);
@@ -113,6 +125,12 @@ function App() {
 	}, [ui, cards, mode]);
 	return (
 		<>
+			{(ui === "playing" || ui === "game-over") && (
+				<div className="scoreboard">
+					<div className="current-score">Current score = {score}</div>
+					<div className="highest-score">Highest score = {highestScore}</div>
+				</div>
+			)}
 			{ui == "home" && (
 				<button className="btn-play" onClick={() => updateUi("modes")}>
 					Play
@@ -122,6 +140,12 @@ function App() {
 			{ui === "start-game" && cards.length < 1 && <h1>loading...</h1>}
 			{/* {ui == "start-game" && cards !== "" && startGame(mode)} */}
 			{ui === "playing" && displayCards(modifiedCards)}
+			{ui === "game-over" && (
+				<div>
+					<h1>Game Over {result === "win" ? <>You win</> : null}</h1>
+					<button>Play again </button>
+				</div>
+			)}
 		</>
 	);
 }

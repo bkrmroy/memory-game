@@ -28,6 +28,16 @@
 div[data-selected="true"] {
 	background-color: rgb(255, 152, 152);
 }
-h1 {
+h1{
 	color: white;
+}
+.scoreboard {
+	display: flex;
+	padding: 16px;
+	background-color: rgb(121, 121, 121);
+	justify-content: space-evenly;
+}
+.scoreboard div {
+	color: white;
+	font-size: 24px;
 }

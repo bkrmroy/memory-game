@@ -1,3 +1,7 @@
 html {
 	background-color: rgb(37, 37, 37);
 }
+body {
+	margin: 0;
+	padding: 0;
+}
