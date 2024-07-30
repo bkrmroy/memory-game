@@ -7,7 +7,11 @@ function App() {
 	const [cards, setCards] = useState([]);
 	const [modifiedCards, setModifiedCards] = useState([]);
 	const [score, updateScore] = useState(0);
-	const [highestScore, setHighestScore] = useState(0);
+	const [highestScore, setHighestScore] = useState({
+		easy: 0,
+		normal: 0,
+		hard: 0,
+	});
 	const [result, setResult] = useState("");
 	const modes = ["easy", "normal", "hard"];
 
@@ -23,7 +27,7 @@ function App() {
 					return (
 						<div
 							onClick={onCardClicked}
-							data-selected={eachCard.selected ? "true" : null}
+							// data-selected={eachCard.selected ? "true" : null}
 							data-name={eachCard.name}
 							className="card"
 							key={eachCard.name}
@@ -43,7 +47,12 @@ function App() {
 	function handleGameOver() {
 		setModifiedCards([]);
 		updateUi("game-over");
-		if (score > highestScore) setHighestScore(score);
+		if (score >= highestScore[mode]) {
+			setHighestScore({
+				...highestScore,
+				[mode]: score,
+			});
+		}
 	}
 	function onCardClicked(e) {
 		const title = e.currentTarget.querySelector(".card-title").textContent;
@@ -52,6 +61,12 @@ function App() {
 				if (card.selected === true) handleGameOver();
 				else {
 					updateScore(score + 1);
+					if (score >= highestScore[mode]) {
+						setHighestScore({
+							...highestScore,
+							[mode]: score + 1,
+						});
+					}
 					return { ...card, selected: true };
 				}
 			} else return card;
@@ -80,7 +95,6 @@ function App() {
 	}
 	//fetching data from api
 	useEffect(() => {
-		console.log("fetching data from api");
 		fetch("https://api.jikan.moe/v4/top/characters", { mode: "cors" })
 			.then((response) => response.json())
 			.then((response) => {
@@ -123,12 +137,21 @@ function App() {
 			startGame();
 		}
 	}, [ui, cards, mode]);
+	function reset() {
+		updateUi("home");
+		updateMode("");
+		setModifiedCards([]);
+		updateScore(0);
+		setResult("");
+	}
 	return (
 		<>
 			{(ui === "playing" || ui === "game-over") && (
 				<div className="scoreboard">
 					<div className="current-score">Current score = {score}</div>
-					<div className="highest-score">Highest score = {highestScore}</div>
+					<div className="highest-score">
+						Highest score ={highestScore[mode]}
+					</div>
 				</div>
 			)}
 			{ui == "home" && (
@@ -142,8 +165,8 @@ function App() {
 			{ui === "playing" && displayCards(modifiedCards)}
 			{ui === "game-over" && (
 				<div>
-					<h1>Game Over {result === "win" ? <>You win</> : null}</h1>
-					<button>Play again </button>
+					<h1>Game Over. {result === "win" ? <>You win</> : null}</h1>
+					<button onClick={reset}>Play again </button>
 				</div>
 			)}
 		</>
