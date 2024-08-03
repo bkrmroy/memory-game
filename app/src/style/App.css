@@ -1,32 +1,78 @@
+@font-face {
+	font-family: anime-ace;
+	src: url(../assets/fonts/anime-ace.regular.ttf);
+}
+button,
+.card-title {
+	font-family: anime-ace, sans-serif;
+}
+.scoreboard,
+.loading {
+	font-family: "Times New Roman", Times, serif;
+}
 .card {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	transition: opacity 0.1s ease, transform 0.2s ease;
+}
+.inner {
+	width: 190px;
+	height: 345px;
+	margin: 0px 4px 0px 4px;
+	position: relative;
+	transform-style: preserve-3d;
+	transition: transform 0.6s;
 	border: solid black 1px;
-	width: 150px;
-	background-color: rgb(230, 230, 230);
-	height: fit-content;
-	justify-self: center;
+	background-color: rgb(223, 219, 219);
 	cursor: pointer;
 	box-shadow: 3px 10px 8px 0px rgba(0, 0, 0, 0.57);
-	border-radius: 3%;
+	border-radius: 8px;
 	opacity: 1;
-	transition: opacity 1s ease 0s;
-	transition: opacity 0.1s ease, transform 0.1s ease;
+	padding: 4px;
+}
+[data-flipped="true"] {
+	transition: transform 0.6s;
+	transform: rotateY(180deg);
+}
+
+.front,
+.back {
+	position: absolute;
+	width: 190px;
+	height: 345px;
+	backface-visibility: hidden;
+}
+.back {
+	background: linear-gradient(rgba(31, 31, 31, 0.3), rgba(0, 0, 0, 0.5)),
+		url("../assets/back-3.jpg");
+	background-position: center;
+	background-size: 120%;
+	background-repeat: no-repeat;
+	object-fit: contain;
+	border-radius: 8px;
+	transform: rotateY(180deg);
 }
 .card:hover {
-	opacity: 0.9;
 	transform: scale(1.08);
 }
+
 .cards-container {
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
 	justify-content: center;
 	align-items: center;
-	padding: 16px;
-	gap: 5%;
+	margin-top: 16px;
+	gap: 24px;
+	width: 100%;
 }
 .card-title {
+	margin-top: 4px;
+	font-size: 16px;
 	text-align: center;
 	text-wrap: wrap;
+	/* margin: 16px 0 16px 0; */
 }
 
 h1 {
@@ -34,8 +80,10 @@ h1 {
 }
 .scoreboard {
 	display: flex;
-	padding: 16px;
-	background-color: rgb(121, 121, 121);
+	width: 100%;
+	padding-top: 16px;
+	padding-bottom: 16px;
+	background-color: rgba(0, 0, 0, 0.4);
 	justify-content: space-evenly;
 }
 .scoreboard div {
@@ -43,10 +91,46 @@ h1 {
 	font-size: 24px;
 }
 .card-img {
-	height: 100%;
-	width: 100%;
+	width: 190px;
+	height: 295px;
+	border-radius: 8px;
 
 	object-fit: contain;
 	/* or
 		object-fit: cover; */
+}
+.game-over {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	flex-grow: 1;
+}
+.btn-play,
+.modes {
+	margin: auto;
+}
+.modes {
+	display: flex;
+	gap: 1rem;
+}
+button {
+	background-color: rgba(167, 68, 65, 0.808);
+	color: rgb(255, 255, 255);
+	padding: 8px 16px 8px 16px;
+	border-radius: 4px;
+	border: none;
+	cursor: pointer;
+	height: fit-content;
+	text-align: center;
+	box-shadow: 3px 10px 8px 0px rgba(0, 0, 0, 0.57);
+	transition: transform 0.3s ease;
+	font-size: 1rem;
+}
+.btn-play {
+	font-size: 1.5rem;
+	padding: 8px 32px 8px 32px;
+}
+button:hover {
+	transform: scale(1.1);
 }

@@ -22,26 +22,34 @@ function App() {
 			handleGameOver();
 		}
 		return (
-			<div className="cards-container">
-				{displayedCards.map((eachCard) => {
-					return (
-						<div
-							onClick={onCardClicked}
-							// data-selected={eachCard.selected ? "true" : null}
-							data-name={eachCard.name}
-							className="card"
-							key={eachCard.name}
-						>
-							<img
-								className="card-img"
-								src={eachCard.img}
-								alt={eachCard.name}
-							/>
-							<h2 className="card-title">{eachCard.name}</h2>
-						</div>
-					);
-				})}
-			</div>
+			<>
+				<div className="cards-container">
+					{displayedCards.map((eachCard) => {
+						return (
+							<div
+								onClick={onCardClicked}
+								data-name={eachCard.name}
+								// data-flipped="true"
+								className="card"
+								key={eachCard.name}
+							>
+								<div className="inner">
+									<div className="front">
+										<img
+											className="card-img"
+											src={eachCard.img}
+											alt={eachCard.name}
+										/>
+										<h2 className="card-title">{eachCard.name}</h2>
+									</div>
+									<h2 className="back"></h2>
+								</div>
+							</div>
+						);
+					})}
+				</div>
+				{/* {toggleFlippedData("remove")} */}
+			</>
 		);
 	}
 	function handleGameOver() {
@@ -54,28 +62,43 @@ function App() {
 			});
 		}
 	}
-	function onCardClicked(e) {
-		const title = e.currentTarget.querySelector(".card-title").textContent;
-		const tempCards = modifiedCards.map((card) => {
-			if (card.name === title) {
-				if (card.selected === true) handleGameOver();
-				else {
-					updateScore(score + 1);
-					if (score >= highestScore[mode]) {
-						setHighestScore({
-							...highestScore,
-							[mode]: score + 1,
-						});
-					}
-					return { ...card, selected: true };
-				}
-			} else return card;
+	function toggleFlippedData(addOrRemove) {
+		const innerCards = document.querySelectorAll(".inner");
+		innerCards.forEach((item) => {
+			if (addOrRemove === "add") item.dataset.flipped = "true";
+			else item.dataset.flipped = "";
 		});
-		setModifiedCards([...helpers.shuffleArray(tempCards)]);
+	}
+	function onCardClicked(e) {
+		// console.log(e.currentTarget);
+		// const innerCard = e.currentTarget.querySelector(".inner");
+		// innerCard.dataset.flipped = "true";
+		toggleFlippedData("add");
+		const title = e.currentTarget.querySelector(".card-title").textContent;
+		//take Time
+		setTimeout(() => {
+			const tempCards = modifiedCards.map((card) => {
+				if (card.name === title) {
+					if (card.selected === true) handleGameOver();
+					else {
+						updateScore(score + 1);
+						if (score >= highestScore[mode]) {
+							setHighestScore({
+								...highestScore,
+								[mode]: score + 1,
+							});
+						}
+						return { ...card, selected: true };
+					}
+				} else return card;
+			});
+			setModifiedCards([...helpers.shuffleArray(tempCards)]);
+			toggleFlippedData("remove");
+		}, 600);
 	}
 	function displayModes(_modes) {
 		return (
-			<>
+			<div className="modes">
 				{_modes.map((_mode) => {
 					return (
 						<button
@@ -90,7 +113,7 @@ function App() {
 						</button>
 					);
 				})}
-			</>
+			</div>
 		);
 	}
 	//fetching data from api
@@ -148,9 +171,9 @@ function App() {
 		<>
 			{(ui === "playing" || ui === "game-over") && (
 				<div className="scoreboard">
-					<div className="current-score">Current score = {score}</div>
+					<div className="current-score">CURRENT SCORE = {score}</div>
 					<div className="highest-score">
-						Highest score ={highestScore[mode]}
+						HIGHEST SCORE ={highestScore[mode]}
 					</div>
 				</div>
 			)}
@@ -160,13 +183,16 @@ function App() {
 				</button>
 			)}
 			{ui === "modes" && displayModes(modes)}
-			{ui === "start-game" && cards.length < 1 && <h1>loading...</h1>}
-			{/* {ui == "start-game" && cards !== "" && startGame(mode)} */}
+			{ui === "start-game" && cards.length < 1 && <h1 className="loading">loading...</h1>}
 			{ui === "playing" && displayCards(modifiedCards)}
 			{ui === "game-over" && (
-				<div>
-					<h1>Game Over. {result === "win" ? <>You win</> : null}</h1>
-					<button onClick={reset}>Play again </button>
+				<div className="game-over">
+					<h1 className="game-over-title">
+						Game Over. {result === "win" ? <>You win</> : null}
+					</h1>
+					<button className="btn-play-again" onClick={reset}>
+						Play again{" "}
+					</button>
 				</div>
 			)}
 		</>
