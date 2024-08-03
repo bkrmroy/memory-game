@@ -70,12 +70,8 @@ function App() {
 		});
 	}
 	function onCardClicked(e) {
-		// console.log(e.currentTarget);
-		// const innerCard = e.currentTarget.querySelector(".inner");
-		// innerCard.dataset.flipped = "true";
 		toggleFlippedData("add");
 		const title = e.currentTarget.querySelector(".card-title").textContent;
-		//take Time
 		setTimeout(() => {
 			const tempCards = modifiedCards.map((card) => {
 				if (card.name === title) {
@@ -119,10 +115,11 @@ function App() {
 	//fetching data from api
 	useEffect(() => {
 		fetch("https://api.jikan.moe/v4/top/characters", { mode: "cors" })
-			.then((response) => response.json())
 			.then((response) => {
-				// setTimeout(() => {
-				console.log("data fetched");
+				if (!response.ok) throw new Error("Could not fetch data");
+				return response.json();
+			})
+			.then((response) => {
 				setCards(
 					response.data.map((item) => {
 						return {
@@ -132,16 +129,13 @@ function App() {
 						};
 					})
 				);
-
-				// }, 2000);
 			})
-			.catch((error) => console.error(error));
+			.catch((error) => alert(error));
 	}, []);
 	//starting main game
 	useEffect(() => {
 		function startGame() {
 			updateUi("playing");
-			// console.log("starting game");
 			if (mode == "easy") {
 				setModifiedCards(
 					helpers.shuffleArray(cards).filter((element, index) => index < 10)
@@ -183,7 +177,9 @@ function App() {
 				</button>
 			)}
 			{ui === "modes" && displayModes(modes)}
-			{ui === "start-game" && cards.length < 1 && <h1 className="loading">loading...</h1>}
+			{ui === "start-game" && cards.length < 1 && (
+				<h1 className="loading">loading...</h1>
+			)}
 			{ui === "playing" && displayCards(modifiedCards)}
 			{ui === "game-over" && (
 				<div className="game-over">
